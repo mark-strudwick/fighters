@@ -3,7 +3,9 @@ use bevy::{
     sprite::MaterialMesh2dBundle,
     window::{close_on_esc, WindowTheme},
 };
+use component::{Fighter, Kinematic, Player, Viewport};
 
+mod component;
 pub mod util;
 
 /// The initial screen width and target viewport
@@ -31,12 +33,6 @@ fn main() {
         .add_systems(Startup, setup)
         .add_systems(Update, (close_on_esc, kinematics, yaw, forward_moving))
         .run();
-}
-
-#[derive(Debug, Component)]
-pub struct Viewport {
-    pub width: f32,
-    pub height: f32,
 }
 
 fn setup(
@@ -81,44 +77,6 @@ pub fn spawn_fighter(
         })
         .insert(crate::Fighter);
 }
-
-/// Player is attached to any entity with alliegence to a particular side (fighters, bullets).
-#[derive(Component, Clone, PartialEq)]
-pub enum Player {
-    /// The red player.
-    Red,
-    /// The green player.
-    Blue,
-}
-
-impl Player {
-    /// Get the color for materials with this player color.
-    pub fn color(&self) -> Color {
-        match self {
-            Player::Red => Color::RED,
-            Player::Blue => Color::BLUE,
-        }
-    }
-
-    /// Get the fighters start position and rotation.
-    pub fn starts_at(&self) -> (Vec3, f32) {
-        match self {
-            Player::Red => (Vec3::new(-200.0, -150.0, 0.0), f32::to_radians(270.0)),
-            Player::Blue => (Vec3::new(200.0, 150.0, 0.0), f32::to_radians(90.0)),
-        }
-    }
-}
-
-/// Kinematic is attached to entities which move.
-#[derive(Component)]
-pub struct Kinematic {
-    /// The speed an entity should move, in the direction indicated by its transform.
-    pub velocity: f32,
-}
-
-/// Fighter is attached to each of the two player fighter entities.
-#[derive(Component)]
-pub struct Fighter;
 
 /// Updates all entities with transforms and kinematics to move in the direction they are facing,
 /// at the velocity indicated by their kinematics.
