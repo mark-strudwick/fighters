@@ -5,7 +5,7 @@ use bevy::prelude::*;
 pub enum Player {
     /// The red player.
     Red,
-    /// The green player.
+    /// The blue player.
     Blue,
 }
 
